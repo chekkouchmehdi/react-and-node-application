@@ -9,30 +9,31 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { login } from "./api";
 import { useRouter } from "next/router";
-import { Alert } from "@mui/material";
+import { add } from "../home/api";
+import AddIcon from "@mui/icons-material/Add";
 
 const theme = createTheme();
 
-export default function SignIn() {
-  const [auth, setAuth] = useState(false);
+export default function Add() {
+  const [done, setDone] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const email = data.get("email");
-    const password = data.get("password");
-    setAuth(await login(String(email), String(password)));
+    const id = data.get("id");
+    const content = data.get("content");
+
+    setDone(await add(String(id), String(content)));
   };
 
   useEffect(() => {
-    if (auth) {
+    if (done) {
       console.log("redirection");
       router.push("/home");
     }
-  }, [auth, router]);
+  }, [done, router]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -47,13 +48,11 @@ export default function SignIn() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <AddIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Add Document
           </Typography>
-          <Alert severity="info">Username : mehdi | Password : admin</Alert>
-
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -64,21 +63,17 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Username"
-              name="email"
-              autoComplete="email"
-              autoFocus
+              id="id"
+              label="ID Document"
+              name="id"
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="content"
+              name="content"
+              label="Content"
             />
 
             <Button
@@ -87,7 +82,7 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Add
             </Button>
           </Box>
         </Box>
